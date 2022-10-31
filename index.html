@@ -1,0 +1,314 @@
+<html>
+
+<head>
+	<title>Yact</title>	
+</head>
+<body>
+		<h1>Yact</h1>
+		<h2>Herramienta de Estimulacion Cognitiva para Adultos Mayores</h2>		
+		<div id="bitacora"></div>
+	<div id="botones">
+	<button id="comenzar" type="button" onclick="inicio()" 
+		<p>COMENZAR</p>
+	<button id="finalizar" type="button" onclick="finalizar()" 
+		<p>FINALIZAR</p>
+	</div>
+	<div id="container" style="height: 600px; width: 400px;">
+	<label for="Seleccionelemento0">Seleccione elemento 1 (espacio):</label>
+	<select name= "Seleccionelemento0" id="Seleccionelemento0">
+		  <option>Ninguno</option>
+	</select>		
+	<br><br>	
+	<label for="Seleccionelemento1">Seleccione elemento 2 (Abajo):</label>	  
+	<select name="Seleccionelemento1" id="Seleccionelemento1">
+			<option>Ninguno</option>
+	</select>	
+	<br><br>		
+	<label for="Seleccionelemento2">Seleccione elemento 3 (Derecha):</label>	  
+	<select name="Seleccionelemento2" id="Seleccionelemento2">
+			<option>Ninguno</option>
+	</select>	
+	<br><br>		  
+	<label for="Seleccionelemento3">Seleccione elemento 4 (Izquierda):</label>	  
+	<select name="Seleccionelemento3" id="Seleccionelemento3">
+			<option>Ninguno</option>
+	</select>	
+	<br><br>		
+	<label for="Seleccionelemento4">Seleccione elemento 5 (Arriba):</label>	  
+	<select name="Seleccionelemento4" id="Seleccionelemento4">
+			<option>Ninguno</option>
+	</select>	
+	<br><br>		
+	<label for="Seleccionelemento5">Seleccione elemento 6 (w):</label>	  
+	<select name="Seleccionelemento5" id="Seleccionelemento5">
+			<option>Ninguno</option>
+	</select>		
+	<br><br>	
+	<label for="Seleccionelemento6">Seleccione elemento 7 (a):</label>	  
+	<select name="Seleccionelemento6" id="Seleccionelemento6">
+			<option>Ninguno</option>
+	</select>		
+	<br><br>	
+	<label for="Seleccionelemento7">Seleccione elemento 8 (s):</label>	  
+	<select name="Seleccionelemento7" id="Seleccionelemento7">
+			<option>Ninguno</option>
+	</select>	
+	<br><br>		
+	<label for="Seleccionelemento8">Seleccione elemento 9 (d):</label>	  
+	<select name="Seleccionelemento8" id="Seleccionelemento8">
+			<option>Ninguno</option>
+	</select>	
+	<br><br>		
+	<label for="Seleccionelemento9">Seleccione elemento 10 (f):</label>	  
+	<select name="Seleccionelemento9" id="Seleccionelemento9">
+			<option>Ninguno</option>
+	</select>		             
+	<br><br>	
+	<label for="CantidadElementos">Cantidad de elementos:</label>	  
+	<select name="CantidadElementos" id="CantidadElementos">
+			<option>4</option>
+	</select>		             
+	<br><br>	
+	<label for="CantidadPreguntas">Cantidad de preguntas:</label>	  
+	<select name="CantidadPreguntas" id="CantidadPreguntas">
+			<option>2</option>
+	</select>		             
+	<br><br>	
+	</div>	
+	<script>
+		
+	    if (document.activeElement.getElementById=="comenzar")
+             document.activeElement.blur();				    
+		// arreglo para hacer mas eficiente la lectura en el juego, luego  será sobreescrito por el json
+		let elementosdisponibles = [["tomate","rojo","redonda","fruta"],
+		                            ["banana","amarillo","alargada","fruta"],
+		                            ["limon","amarillo","redonda","fruta"],
+		                            ["manzana","rojo","redonda","fruta"],
+		                            ["ajo","blanco","redonda","verdura "],
+		                            ["pera","amarillo","redonda","fruta"],
+		                            ["pepino","verde","alargada","verdura"],
+		                            ["zapallito","verde","redonda","verdura"],
+		                            ["batata","marron","alargada","verdura"],
+		                            ["zanahoria","naranja","alargada","verdura"]];
+		                            /*["papa","marron","alargada","verdura"],
+		                            ["naranja","naranja","redonda","fruta"],
+		                            ["naranja","naranja","redonda","fruta"],
+		                            ["naranja","naranja","redonda","fruta"],
+		                            ["naranja","naranja","redonda","fruta"],
+		                            ["naranja","naranja","redonda","fruta"],
+		                            */
+		                            
+
+		// fin arreglo para hacer mas eficiente la lectura en el juego, luego  será sobreescrito por el 	
+		
+		let n_elementos = 10;
+		let n_preguntas = 2;
+		
+		let n_aciertos = [0,0,0,0,0,0,0,0,0,0];
+		let n_fallas = [0,0,0,0,0,0,0,0,0,0];
+		
+		let elementos = [0,1,2,3,4,5,6,7,8,9];
+		let entradas = [' ','ArrowDown','ArrowRight','ArrowLeft','ArrowUp','w','a','s','d','f'];		
+		let ultima_respuesta_correcta = false;
+		let pregunta_actual = 0;
+		let elemento_presionado = -1;
+		let preguntando = false;
+		let n_aciertostotales = 0;
+		var path_audio = 'Audio/';		
+		var audio = new Audio(path_audio + 'holabienvenidos.mp3');					
+		let preguntas = [];		
+		let bitacora =  document.getElementById('bitacora').innerHTML;
+		let funcionando = false;	
+
+		for(var i = 0; i < entradas.length; i++) {			
+			var elementodeentrada = document.getElementById('Seleccionelemento' + i); 
+			for(var j = 0; j < elementosdisponibles.length; j++) {
+				var opt = elementosdisponibles[j][0];			    
+			    var el = document.createElement("option");
+                el.textContent = opt;
+                el.value = opt;		    				
+			    elementodeentrada.appendChild(el);
+			}		  
+		}
+		for(var i = 0; i < entradas.length; i++) {			
+		   document.getElementById('Seleccionelemento' + i).selectedIndex = i+1;		 
+		}
+		for(var i = 0; i < elementos.length; i++) {			
+		     	var opt = elementos[i]+1;			    
+			    var docelem = document.createElement("option");
+				var docpreg = document.createElement("option");
+                docelem.textContent = opt;
+                docelem.value = opt;	
+				docpreg.textContent = opt;
+                docpreg.value = opt;	
+			    var CantidadElementos = document.getElementById('CantidadElementos'); 
+				var CantidadPreguntas = document.getElementById('CantidadPreguntas'); 
+			    CantidadElementos.appendChild(docelem);		
+				CantidadPreguntas.appendChild(docpreg);		
+		}
+
+		function sleep(ms) {
+		  if (funcionando == false) return;
+		  return new Promise(resolve => setTimeout(resolve, ms));		  
+		}
+		
+        function escribir(msj) {
+			if (msj == '') bitacora = '';
+			else 
+			 bitacora += msj;
+			document.getElementById('bitacora').innerHTML = bitacora;
+			console.log(bitacora);
+		}
+
+		async function finalizar() {
+			funcionando = false;
+			escribir('');				  		  		  
+			escribir('FINALIZA, ');
+			habilitarcontroles();
+		}
+
+		async function inicio() {
+		  finalizar();
+		  deshabilitarcontroles();
+		  document.activeElement.blur();				    
+		  for(var j = 0; j < elementos.length; j++) {				
+			    var combo = document.getElementById('Seleccionelemento' + j); 				
+				elementos[j] = combo.options[combo.selectedIndex].selectedIndex;			    
+			} 	
+	  	  combo = document.getElementById("CantidadElementos"); 				
+          n_elementos = combo.options[combo.selectedIndex].text;		          
+		  combo = document.getElementById("CantidadPreguntas"); 						
+		  n_preguntas = combo.options[combo.selectedIndex].text;			    
+		  n_aciertos = [0,0,0,0,0,0,0,0,0,0];
+		  n_fallas = [0,0,0,0,0,0,0,0,0,0];
+           
+		  ultima_respuesta_correcta = false;
+		  pregunta_actual = 0;
+		  elemento_presionado = -1;
+		  preguntando = false;
+		  n_aciertostotales = 0;
+          
+		  escribir('');				  		  		  
+		  escribir('COMENZAR, ');	
+		  funcionando = true;
+		  audio.src = path_audio + 'holabienvenidos.mp3';
+		  audio.play();		  
+		  await sleep(4000);  
+		  preguntas = [];		  
+		  while(preguntas.length < n_preguntas){
+			var r = Math.floor(Math.random() * n_elementos);						
+			if (n_elementos>=n_preguntas)
+			{
+			    if(preguntas.indexOf(r) === -1) preguntas.push(r);
+			}    
+			  else  	
+			  	preguntas.push(r);
+			console.log(preguntas);  
+		}
+		 console.log('preguntas: ' + preguntas);
+		 for (p=0;p<n_preguntas;p++)
+			{
+			  if (funcionando == false) break;
+			  ultima_respuesta_correcta = false;
+			  pregunta_actual = preguntas[p];
+			  console.log('p: ' + p);
+			  console.log('pregunta_actual: ' + pregunta_actual);             
+			  audio.src = path_audio + 'porfavortoca.mp3';
+			  console.log('audio.src: ' + audio.src);
+			  audio.play();
+			  await sleep(4000);  
+			  preguntando = true;
+			  while (ultima_respuesta_correcta == false)
+				  {
+					if (funcionando == false) break;
+					escribir(elementosdisponibles[pregunta_actual][0] + ', ');					
+					console.log('ultima_respuesta_correcta: ' + ultima_respuesta_correcta);           
+					audio.src = path_audio + elementosdisponibles[pregunta_actual][0] + '.mp3';
+					console.log('audio.src: ' + audio.src);
+					audio.play();
+					await sleep(2000);  
+					await sleep(4000);
+			      }			
+			}		
+		   if (funcionando == false) return;
+		   preguntando = false;
+		   audio.src = path_audio + 'felicitaciones.mp3';
+		   console.log('audio.src: ' + audio.src);
+		   audio.play();
+		   await sleep(5000);
+		   for (i=0;i<n_aciertos.length;i++)
+			   n_aciertostotales = n_aciertostotales+n_aciertos[i];   
+		   escribir('Felicitaciones! tu cantidad de aciertos es: ' + n_aciertostotales);	   
+		   audio.src = path_audio + n_aciertostotales + '.mp3';
+		   console.log('audio.src: ' + audio.src);
+		   audio.play();
+		   await sleep(2000);
+		   finalizar();
+		}
+		
+		
+		function acierta() {
+		   preguntando = false;
+		   console.log("Acierta");
+		   n_aciertos[pregunta_actual] = n_aciertos[pregunta_actual] + 1;
+		   ultima_respuesta_correcta = true;   
+		   audio.src = path_audio + 'muybien.mp3';      
+		   audio.play();
+		   sleep(3000);  
+		}
+		
+		function falla() {
+		  console.log("Falla");
+		   n_fallas[pregunta_actual] = n_fallas[pregunta_actual] + 1;   
+		   audio.src = path_audio + 'pruebaotravez.mp3';     
+		   audio.play();
+		   sleep(3000);    
+		}		
+		
+		function deshabilitarcontroles() {
+			document.getElementById("comenzar").disabled = true;	
+			document.getElementById("Seleccionelemento0").disabled = true;	
+			document.getElementById("Seleccionelemento1").disabled = true;	
+			document.getElementById("Seleccionelemento2").disabled = true;	
+			document.getElementById("Seleccionelemento3").disabled = true;	
+			document.getElementById("Seleccionelemento4").disabled = true;	
+			document.getElementById("Seleccionelemento5").disabled = true;	
+			document.getElementById("Seleccionelemento6").disabled = true;	
+			document.getElementById("Seleccionelemento7").disabled = true;	
+			document.getElementById("Seleccionelemento8").disabled = true;	
+			document.getElementById("Seleccionelemento9").disabled = true;	
+			document.getElementById("CantidadElementos").disabled = true;	
+			document.getElementById("CantidadPreguntas").disabled = true;	
+		}
+		
+		function habilitarcontroles() {
+			document.getElementById("comenzar").disabled = false;			
+			document.getElementById("Seleccionelemento0").disabled = false;	
+			document.getElementById("Seleccionelemento1").disabled = false;	
+			document.getElementById("Seleccionelemento2").disabled = false;	
+			document.getElementById("Seleccionelemento3").disabled = false;	
+			document.getElementById("Seleccionelemento4").disabled = false;	
+			document.getElementById("Seleccionelemento5").disabled = false;	
+			document.getElementById("Seleccionelemento6").disabled = false;	
+			document.getElementById("Seleccionelemento7").disabled = false;	
+			document.getElementById("Seleccionelemento8").disabled = false;	
+			document.getElementById("Seleccionelemento9").disabled = false;	
+			document.getElementById("CantidadElementos").disabled = false;	
+			document.getElementById("CantidadPreguntas").disabled = false;	
+		}
+
+		document.addEventListener("keydown", function (event) {
+			 if (preguntando==false) return;
+		         elemento_presionado = -1;
+		         elemento_presionado = entradas.indexOf(event.key);
+		         console.log('elemento_presionado: ' + elemento_presionado);
+		         if (pregunta_actual==elemento_presionado)
+				     acierta()     
+				   else
+					 falla();
+		});		
+		</script>
+		
+</body>
+
+</html>
